@@ -79,9 +79,3 @@ async function handleRequest(req: Request): Promise<Response> {
 
 // Start server with the refactored handler
 serve((req) => handleRequest(req));
-
-// Graceful shutdown
-Deno.addSignalListener("SIGINT", () => {
-  console.log("\n👋 Shutting down server...");
-  Deno.exit();
-});
