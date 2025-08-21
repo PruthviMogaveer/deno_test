@@ -1,5 +1,6 @@
 import { serve } from "./deps.ts";
 import { getProjects } from "./routes/projects.ts";
+import { authorizeRequest } from "./middleware/auth.ts";
 
 // Startup notice
 console.log("=".repeat(50));
@@ -35,8 +36,12 @@ const routes: Record<string, Map<string, Handler>> = {
 
 // Register existing GET /api/projects route
 routes.GET.set("/api/projects", async (req, url) => {
-  const userId = url.searchParams.get("userId") ?? undefined;
-  console.log(`🔍 Fetching projects for user ID: ${userId ?? "none"}`);
+  // Authorize user
+  const userId = await authorizeRequest(req);
+  if (!userId) {
+    return jsonResponse({ error: "Unauthorized" }, 401);
+  }
+  console.log(`🔍 Fetching projects for user ID: ${userId}`);
   const projects = await getProjects(userId);
   return jsonResponse(projects);
 });

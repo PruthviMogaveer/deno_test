@@ -12,7 +12,6 @@ export async function getProjects(userId?: string) {
         .select('company_id, role')
         .eq('id', userId)
         .single();
-      console.log(userData);
 
       if (userError || !userData) {
         console.error('Error fetching user data:', userError);
