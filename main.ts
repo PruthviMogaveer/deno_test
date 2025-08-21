@@ -89,4 +89,4 @@ async function handleRequest(req: Request): Promise<Response> {
 // On Deno Deploy, this message does not appear and does not affect deployment.
 
 // Start server with the refactored handler
-serve((req) => handleRequest(req));
+Deno.serve((req) => handleRequest(req));
