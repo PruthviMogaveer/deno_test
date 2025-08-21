@@ -3,7 +3,10 @@ import { getProjects } from "./routes/projects.ts";
 
 // Startup notice
 console.log("=".repeat(50));
-console.log(`🚀 Server starting on http://localhost:8000`);
+// Update message to clarify port usage
+console.log(
+  `🚀 Server starting (port is managed by Deno Deploy or defaults to 8000 locally)`
+);
 console.log("=".repeat(50));
 
 // Build and reuse CORS + JSON headers
@@ -36,6 +39,11 @@ routes.GET.set("/api/projects", async (req, url) => {
   console.log(`🔍 Fetching projects for user ID: ${userId ?? "none"}`);
   const projects = await getProjects(userId);
   return jsonResponse(projects);
+});
+
+// Add GET / route for Deno Deploy warm-up
+routes.GET.set("/", async () => {
+  return jsonResponse({ status: "ok", message: "Deno server is running" });
 });
 
 // Finds a handler for method + pathname, or undefined
@@ -76,6 +84,9 @@ async function handleRequest(req: Request): Promise<Response> {
 
   return response;
 }
+
+// Note: "Listening on http://localhost:8000/" is printed by Deno's serve() only when run locally.
+// On Deno Deploy, this message does not appear and does not affect deployment.
 
 // Start server with the refactored handler
 serve((req) => handleRequest(req));
