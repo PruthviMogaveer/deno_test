@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import "jsr:@std/dotenv/load";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ;
