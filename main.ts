@@ -1,6 +1,7 @@
 import { serve } from "./deps.ts";
 import { getProjects } from "./routes/projects.ts";
 import { authorizeRequest } from "./middleware/auth.ts";
+import { loginUser } from "./routes/auth.ts";
 
 // Startup notice
 console.log("=".repeat(50));
@@ -44,6 +45,24 @@ routes.GET.set("/api/projects", async (req, url) => {
   console.log(`🔍 Fetching projects for user ID: ${userId}`);
   const projects = await getProjects(userId);
   return jsonResponse(projects);
+});
+
+// Register POST /api/login route
+routes.POST.set("/api/login", async (req, _url) => {
+  try {
+    const body = await req.json();
+    const { email, password } = body;
+
+    if (!email || !password) {
+      return jsonResponse({ error: "Email and password are required" }, 400);
+    }
+
+    const token = await loginUser(email, password);
+    return jsonResponse({ token });
+  } catch (err) {
+    console.error("Login error:", err);
+    return jsonResponse({ error: "Invalid credentials" }, 401);
+  }
 });
 
 // Add GET / route for Deno Deploy warm-up
