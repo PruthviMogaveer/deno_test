@@ -1,8 +1,8 @@
 import { supabase } from "../supabase.ts";
-import * as bcrypt from "bcrypt";
 import { create, getNumericDate } from "djwt";
 
-const JWT_SECRET = Deno.env.get("JWT_SECRET") || "your-secret-key";
+const JWT_SECRET =
+  Deno.env.get("JWT_SECRET");
 
 // Create a CryptoKey for HMAC signing
 async function getKey(): Promise<CryptoKey> {
@@ -30,21 +30,36 @@ export async function loginUser(
   email: string,
   password: string
 ): Promise<string> {
-  const { data, error } = await supabase
+  console.log(`🔐 Login attempt for email: ${email}`);
+
+  let { data, error } = await supabase
     .from("User_Profile")
-    .select("id, email, password")
-    .eq("email", email)
-    .single();
+    .select("*")
+    .eq("email", email);
 
-  if (error || !data) {
-    throw new Error("Invalid ");
+  data = data ? data[0] : null;
+
+  console.log("📊 Query result:", { data: data ? data : "not found", error });
+
+  if (error) {
+    console.error("❌ Database error:", error.message);
+    throw new Error("Invalid credentials");
   }
 
-  const isMatch = await bcrypt.compare(password, data.password);
+  if (!data) {
+    console.error("❌ No user found with email:", email);
+    throw new Error("Invalid credentials");
+  }
+
+  console.log("✅ User found, comparing password...");
+  const isMatch = password === data.password;
+
   if (!isMatch) {
-    throw new Error("Invalid ma");
+    console.error("❌ Password mismatch");
+    throw new Error("Invalid credentials");
   }
 
+  console.log("✅ Password matched, generating token...");
   const token = await generateToken(data.id);
   return token;
 }
