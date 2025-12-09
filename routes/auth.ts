@@ -34,7 +34,8 @@ export async function loginUser(
   let { data, error } = await supabase
     .from("User_Profile")
     .select("*")
-    .eq("email", email);
+    .eq("email", email)
+    .eq("password", password);
 
   data = data ? data[0] : null;
 
