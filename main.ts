@@ -61,7 +61,7 @@ routes.POST.set("/api/login", async (req, _url) => {
     return jsonResponse({ token });
   } catch (err) {
     console.error("Login error:", err);
-    return jsonResponse({ error: "Invalid credentials" }, 401);
+    return jsonResponse({ error: err }, 401);
   }
 });
 
