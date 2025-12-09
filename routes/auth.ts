@@ -1,8 +1,7 @@
 import { supabase } from "../supabase.ts";
 import { create, getNumericDate } from "djwt";
 
-const JWT_SECRET =
-  Deno.env.get("JWT_SECRET");
+const JWT_SECRET = Deno.env.get("JWT_SECRET");
 
 // Create a CryptoKey for HMAC signing
 async function getKey(): Promise<CryptoKey> {
@@ -60,6 +59,6 @@ export async function loginUser(
   }
 
   console.log("✅ Password matched, generating token...");
-  const token = await generateToken(data.id);
+  const token = await generateToken(data);
   return token;
 }
