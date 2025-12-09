@@ -42,7 +42,7 @@ export async function loginUser(
 
   const isMatch = await bcrypt.compare(password, data.password);
   if (!isMatch) {
-    throw new Error("Invalid credentials");
+    throw new Error("Invalid ma");
   }
 
   const token = await generateToken(data.id);
