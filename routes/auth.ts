@@ -28,7 +28,7 @@ function generateToken(userId: string): Promise<string> {
 export async function loginUser(
   email: string,
   password: string
-): Promise<string> {
+): Promise<object> {
   console.log(`🔐 Login attempt for email: ${email}`);
 
   let { data, error } = await supabase
@@ -60,5 +60,9 @@ export async function loginUser(
 
   console.log("✅ Password matched, generating token...");
   const token = await generateToken(data);
-  return token;
+  const userData = {
+    token,
+    data
+  }
+  return userData;
 }
